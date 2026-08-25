@@ -1,0 +1,30 @@
+name: Feature request
+description: Suggest an improvement to the desktop app
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        This app is a shell around the web front end. Changes to what the app
+        *shows* usually belong in
+        [molecare-webapp](https://github.com/MoleCare/molecare-webapp); this
+        repository covers windowing, tray, menus, storage and updates.
+  - type: textarea
+    id: problem
+    attributes:
+      label: What can't you do today?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: What would you add?
+    validations:
+      required: true
+  - type: checkboxes
+    id: security
+    attributes:
+      label: Security
+      options:
+        - label: This does not weaken contextIsolation, nodeIntegration, webSecurity or the CSP
+          required: true

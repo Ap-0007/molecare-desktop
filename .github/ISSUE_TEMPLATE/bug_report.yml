@@ -1,0 +1,41 @@
+name: Bug report
+description: The desktop app does not behave as expected
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        **Do not attach real skin photographs, account details, or tokens.**
+        If this is a security vulnerability, email info@molecare.co.uk instead.
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened?
+    validations:
+      required: true
+  - type: textarea
+    id: repro
+    attributes:
+      label: Steps to reproduce
+    validations:
+      required: true
+  - type: dropdown
+    id: os
+    attributes:
+      label: Operating system
+      options: [macOS, Windows, Linux]
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: App version and how you got it
+      placeholder: "1.0.0, built from source / downloaded release"
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Log output
+      description: "electron-log writes to the app's log directory. Redact anything personal before pasting."
+      render: shell

@@ -1,0 +1,76 @@
+appId: com.molecare.desktop
+productName: MoleCare
+copyright: Copyright © 2026 MoleCare
+
+directories:
+  output: dist
+  buildResources: build
+
+files:
+  - src/main/**/*
+  - src/renderer/**/*
+  - src/assets/**/*
+  - "!**/*.map"
+
+mac:
+  target:
+    - target: dmg
+      arch:
+        - x64
+        - arm64
+  category: public.app-category.medical
+  icon: src/assets/icon.icns
+  hardenedRuntime: true
+  gatekeeperAssess: false
+  entitlements: build/entitlements.mac.plist
+  entitlementsInherit: build/entitlements.mac.plist
+
+dmg:
+  contents:
+    - x: 410
+      y: 150
+      type: link
+      path: /Applications
+    - x: 130
+      y: 150
+      type: file
+
+win:
+  target:
+    - target: nsis
+      arch:
+        - x64
+  icon: src/assets/icon.ico
+
+nsis:
+  oneClick: false
+  perMachine: false
+  allowToChangeInstallationDirectory: true
+  deleteAppDataOnUninstall: false
+
+linux:
+  target:
+    - target: AppImage
+      arch:
+        - x64
+    - target: deb
+      arch:
+        - x64
+    - target: rpm
+      arch:
+        - x64
+  category: Science
+  icon: src/assets
+  synopsis: Skin health monitoring for desktops and laptops
+  description: Track moles, ABCDE checks, and skin diary on Mac, Windows, and Linux.
+  desktop:
+    # electron-builder 26 moved the freedesktop entry keys under `entry`.
+    entry:
+      Name: MoleCare
+      Comment: Skin health monitoring
+      Categories: Science;MedicalSoftware;
+
+publish:
+  provider: github
+  owner: molecare
+  repo: molecare-desktop

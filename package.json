@@ -1,0 +1,40 @@
+{
+  "name": "molecare-desktop",
+  "version": "1.0.0",
+  "description": "Desktop app for MoleCare \u2014 skin health self-management on macOS, Windows and Linux. Not a diagnostic tool and not a medical device.",
+  "author": "MoleCare LTD <info@molecare.co.uk> (https://www.molecare.co.uk)",
+  "license": "Apache-2.0",
+  "main": "src/main/main.js",
+  "scripts": {
+    "dev": "electron src/main/main.js --dev",
+    "build:webapp": "bash scripts/build-webapp.sh",
+    "build": "npm run build:webapp && electron-builder --mac --win --linux",
+    "build:mac": "npm run build:webapp && electron-builder --mac",
+    "build:win": "npm run build:webapp && electron-builder --win",
+    "build:linux": "npm run build:webapp && electron-builder --linux",
+    "build:all": "npm run build",
+    "pack": "npm run build:webapp && electron-builder --dir",
+    "postinstall": "electron-builder install-app-deps"
+  },
+  "dependencies": {
+    "electron-log": "^5.4.4",
+    "electron-store": "^8.2.0",
+    "electron-updater": "^6.8.9"
+  },
+  "devDependencies": {
+    "electron": "^44.0.0",
+    "electron-builder": "^26.15.3"
+  },
+  "engines": {
+    "node": ">=20.9.0",
+    "npm": ">=10.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MoleCare/molecare-desktop.git"
+  },
+  "bugs": {
+    "url": "https://github.com/MoleCare/molecare-desktop/issues"
+  },
+  "homepage": "https://github.com/MoleCare/molecare-desktop#readme"
+}

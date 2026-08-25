@@ -1,0 +1,88 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+env:
+  NODE_VERSION: '20'
+
+jobs:
+  package:
+    name: Package
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+
+      - name: Install
+        run: npm ci
+
+      - name: Check main process syntax
+        run: for f in src/main/*.js; do node --check "$f"; done
+
+      - name: Check out the web app
+        # The renderer is built from a separate repository.
+        run: git clone --depth 1 https://github.com/MoleCare/molecare-webapp.git ../molecare-webapp
+
+      - name: Build the renderer
+        run: npm run build:webapp
+
+      - name: Package (unsigned)
+        # CSC_IDENTITY_AUTO_DISCOVERY=false keeps electron-builder from looking
+        # for signing certificates that CI does not and should not have.
+        env:
+          CSC_IDENTITY_AUTO_DISCOVERY: 'false'
+        run: npx electron-builder --dir --mac
+
+      - name: Confirm the app was produced
+        run: test -d dist/mac-*/MoleCare.app && echo "MoleCare.app built"
+
+  sensitive-data:
+    name: Sensitive data check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Block credential, key and signing files
+        run: |
+          set -euo pipefail
+          BASE="${{ github.event.pull_request.base.sha || github.event.before }}"
+          HEAD="${{ github.event.pull_request.head.sha || github.sha }}"
+          FILES=$(git diff --name-only --diff-filter=AM "$BASE" "$HEAD" || true)
+          [ -z "$FILES" ] && { echo "No files to check."; exit 0; }
+          BAD=$(echo "$FILES" | grep -iE '\.(pem|key|p12|pfx|mobileprovision)$|(^|/)\.env$' || true)
+          if [ -n "$BAD" ]; then
+            echo "::error::Credential or signing files must not be committed:"
+            echo "$BAD" | sed 's/^/  /'
+            exit 1
+          fi
+          echo "No credential file paths in this pull request."
+
+      - name: Block embedded base64 blobs
+        run: |
+          set -euo pipefail
+          BASE="${{ github.event.pull_request.base.sha || github.event.before }}"
+          HEAD="${{ github.event.pull_request.head.sha || github.sha }}"
+          FAIL=0
+          for f in $(git diff --name-only --diff-filter=AM "$BASE" "$HEAD" || true); do
+            [ -f "$f" ] || continue
+            case "$f" in *.lock|package-lock.json|*.svg|*.icns|*.ico|*.png) continue;; esac
+            # A real patient photograph once reached a MoleCare repository as a
+            # data: URI inside a source file, past every filename-based check.
+            if grep -qE '[A-Za-z0-9+/]{512,}={0,2}' "$f"; then
+              echo "::error file=$f::Long base64 blob detected. Do not embed binaries in source."
+              FAIL=1
+            fi
+          done
+          [ "$FAIL" -eq 0 ] && echo "No embedded base64 blobs." || exit 1

@@ -1,0 +1,21 @@
+node_modules/
+dist/
+# Built from the molecare-webapp repository by scripts/build-webapp.sh
+src/renderer/
+*.dmg
+*.exe
+*.AppImage
+*.snap
+*.deb
+*.rpm
+.DS_Store
+*.log
+
+# Never commit signing material or credentials
+*.p12
+*.pem
+*.key
+*.mobileprovision
+.env
+.env.*
+!.env.example
