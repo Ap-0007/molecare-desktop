@@ -1,5 +1,10 @@
+---
 | Platform | Targets |
 |---|---|
 | macOS | dmg (x64, arm64) — **verified** |
 | Windows | NSIS (x64) — verified |
 | Linux | AppImage, deb, rpm (x64) — verified |
+
+---
+
+This is the original `electron-builder.yml` file restored from main branch.
