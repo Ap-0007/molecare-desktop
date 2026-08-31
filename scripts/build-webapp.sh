@@ -10,3 +10,10 @@ else
 fi
 
 echo $?
+
+MOLECARE_WEBAPP_DIR=$(pwd)
+MISSING_CHECKOUT_ERROR_MESSAGE="Missing checkout error message"
+
+if [ $? -ne 0 ]; then
+  echo "Error occurred"
+fi
