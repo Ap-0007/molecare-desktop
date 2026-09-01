@@ -25,7 +25,6 @@ function createMenu(mainWindow, isDev) {
 				{ type: 'separator' },
 				{ role: 'hide' },
 				{ role: 'hideOthers' },
-				{ role: 'unhide' },
 				{ type: 'separator' },
 				{ role: 'quit' },
 			],
